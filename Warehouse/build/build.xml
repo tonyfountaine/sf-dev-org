@@ -1,51 +1,31 @@
 <project name="Retrieve and Deploy SFDC metadata" default="deployEmptyCheckOnly" basedir=".." xmlns:sf="antlib:com.salesforce">
-	<taskdef uri="antlib:com.salesforce" resource="com/salesforce/antlib.xml" />
+	<taskdef resource="com/salesforce/antlib.xml" uri="antlib:com.salesforce">
+		<classpath>
+			<pathelement location="${basedir}/build/ant-salesforce.jar" />
+		</classpath>
+	</taskdef>
 
-    <property file="${basedir}/build/build.properties"/>
-    <property environment="env"/>
+	<property file="${basedir}/build/build.properties" />
+	<property environment="env" />
 
-    <target name="getCode">
-      <echo level="info">Retrieving the server's version of code</echo>
-      <mkdir dir="${basedir}/${sfdc.retrieveTarget}"/>
-      <sf:retrieve
-        retrieveTarget="${basedir}/${sfdc.retrieveTarget}"
-        username="${sfdc.username}"
-        password="${sfdc.password}"
-        serverurl="${sfdc.serverurl}"
-        unpackaged="src/package.xml"/>
-      <move file="${basedir}/${sfdc.retrieveTarget}" tofile="src"/>
-    </target>
+	<target name="getCode">
+		<echo level="info">Retrieving the server's version of code</echo>
+		<mkdir dir="${basedir}/${sfdc.retrieveTarget}" />
+		<sf:retrieve retrieveTarget="${basedir}/${sfdc.retrieveTarget}" username="${sfdc.username}" password="${sfdc.password}" serverurl="${sfdc.serverurl}" unpackaged="src/package.xml" />
+		<move file="${basedir}/${sfdc.retrieveTarget}" tofile="src" />
+	</target>
 
-    <target name="deployCode">
-      <echo level="info">Performing the deploy</echo>
-      <sf:deploy
-        username="${sfdc.username}"
-        password="${sfdc.password}"
-        serverurl="${sfdc.serverurl}"
-        deployRoot="${basedir}/src"
-        pollWaitMillis="${sfdc.pollWaitMillis}"
-        maxPoll="${sfdc.maxPoll}"/>
-    </target>
+	<target name="deployCode">
+		<echo level="info">Performing the deploy</echo>
+		<sf:deploy username="${sfdc.username}" password="${sfdc.password}" serverurl="${sfdc.serverurl}" deployRoot="${basedir}/src" pollWaitMillis="${sfdc.pollWaitMillis}" maxPoll="${sfdc.maxPoll}" />
+	</target>
 
-    <target name="deployEmptyCheckOnly">
-      <echo level="info">Testing the deploy</echo>
-      <sf:deploy
-          checkOnly="true"
-          logType="Debugonly"
-          username="${sfdc.username}"
-          password="${sfdc.password}"
-          serverurl="${sfdc.serverurl}"
-          deployRoot="${basedir}/src"
-          pollWaitMillis="${sfdc.pollWaitMillis}"
-          maxPoll="${sfdc.maxPoll}" 
-		  runAllTests="true" />
-    </target>
-	
+	<target name="deployEmptyCheckOnly">
+		<echo level="info">Testing the deploy</echo>
+		<sf:deploy checkOnly="true" logType="Debugonly" username="${sfdc.username}" password="${sfdc.password}" serverurl="${sfdc.serverurl}" deployRoot="${basedir}/src" pollWaitMillis="${sfdc.pollWaitMillis}" maxPoll="${sfdc.maxPoll}" runAllTests="true" />
+	</target>
+
 	<target name="describeMetadata">
-		<sf:describeMetadata
-	        username="${sfdc.username}"
-	        password="${sfdc.password}"
-	        serverurl="${sfdc.serverurl}"
-		/>
+		<sf:describeMetadata username="${sfdc.username}" password="${sfdc.password}" serverurl="${sfdc.serverurl}" />
 	</target>
 </project>
